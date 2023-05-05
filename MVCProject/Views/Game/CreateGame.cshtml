@@ -1,0 +1,67 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Game Create Page";
+    var GameData = (BusinessLogic.Models.GameMasterVM)ViewBag.GameData;
+}
+
+<div class="wrapper ">
+
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">videogame_asset</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/Game/Index"><i class="material-icons">remove_red_eye</i>View Game</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @using (Html.BeginForm("CreateGame", "Game", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                            {
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleEmail" class="bmd-label-floating"> Game Name *</label>
+                                        <input type="text" class="form-control" id="gameName" name="gameName" value="@(GameData != null ? (String.IsNullOrEmpty(GameData.GameName)? "": GameData.GameName):"")" required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="firstName" class="bmd-label-floating"> Game Description *</label>
+                                        <input type="text" class="form-control" id="gameDesc" value="@(GameData != null ? (String.IsNullOrEmpty(GameData.GameDesc)? "": GameData.GameDesc):"")" required="true" name="gameDesc">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName" class="bmd-label-floating"> Game File Name (.exe) *</label>
+                                        <input type="text" class="form-control" id="gameExeName" value="@(GameData != null ? (String.IsNullOrEmpty(GameData.ExeName)? "": GameData.ExeName):"")" required="true" name="gameExeName">
+                                    </div>
+                                    <input type="file" name="file" />
+                                    <div class="form-group">
+                                        <label for="lastName" class="bmd-label-floating"> Game Banner *</label>
+                                    </div>
+                                    <input type="file" name="banner" />
+                                </div>
+                                <div class="card-footer text-right">
+                                    <input type="hidden" name="gameID" value="@(GameData != null ? (GameData.GameID == 0 ? 0: GameData.GameID):0)" />
+                                    <button type="submit" class="btn btn-bluedark">Save</button>
+                                </div>
+                            }
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/core/jquery.min.js"></script>
+
+

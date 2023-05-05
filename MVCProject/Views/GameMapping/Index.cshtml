@@ -1,0 +1,126 @@
+﻿@model List<BusinessLogic.Models.DeviceGameMappingModel>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Device Game Mapping";
+    var modalPopup = ViewBag.isSaved;
+}
+<div class="wrapper ">
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">place</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/GameMapping/CreateDeviceGameMapping"><i class="material-icons">add</i>Add Game Mapping</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="toolbar">
+                                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                                </div>
+                                <div class="material-datatables success">
+                                    <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Device Name</th>
+                                                <th>Game Name</th>
+                                                <th>Game timeing</th>
+                                                <th>Game Amount</th>
+                                                <th>Active Game</th>
+                                                <th class="disabled-sorting text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                foreach (var DL in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@DL.DeviceName</td>
+                                                        <td>@DL.GameName</td>
+                                                        <td>@DL.GameTime</td>
+                                                        <td>@DL.GameAmount</td>
+                                                        <td>
+                                                            <div class="togglebutton togglebutton-bluedark">
+                                                                <label>
+                                                                    <input type="checkbox" class="chkInActive" value="@DL.MappingID" checked="@(DL.ActiveDeviceInfo==true? true:false)">
+                                                                    <span class="toggle"></span>
+                                                                </label>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-right flex-row">
+                                                            <a href="/GameMapping/CreateDeviceGameMapping/@DL.MappingID" class="btn btn-link btn-info btn-just-icon"><i class="material-icons">edit</i></a>
+                                                            @*<a href="Game/Delete/@gm.GameID" class="btn btn-link btn-danger btn-just-icon"><i class="material-icons">close</i></a>*@
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <!-- end col-md-12 -->
+                    <input type="hidden" id="lblPopup" value="@modalPopup" />
+                </div>
+
+                <!-- end row -->
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/assets/js/core/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": true,
+            "language": {
+                search: "INPUT",
+                searchPlaceholder: "Search records",
+            }
+        });
+        $(".pagination").addClass("pagination-bluedark");
+        var table = $('#datatables').DataTable();
+
+        // Edit record
+
+        table.on('click', '.chkInActive', function () {
+            debugger
+            var id = $(this).val();
+            var ischecked = ($(this).prop('checked') == true ? 1 : 0);
+            var param = [];
+            param.push({ name: 'id', value: id });
+            param.push({ name: 'ischecked', value: ischecked });
+            doAjaxSubmit("/GameMapping/Delete", param, function (json, action, success) {
+                if (success) { }
+            });
+        });
+        if ($("#lblPopup").val() == "Saved") {
+            Swal.fire('Successfully', 'Game has been saved successfully!', 'success')
+        }
+        else if ($("#lblPopup").val() == "Updated") {
+            Swal.fire('Successfully', 'Game Updated successfully!', 'success')
+        }
+
+        $("#datatables_filter").css({ "float": "right" });
+        $("#datatables_paginate").css({ "float": "right" });
+
+    });
+</script>

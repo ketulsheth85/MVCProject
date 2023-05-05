@@ -1,0 +1,98 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "User Mapping";
+    var GameData = (List<BusinessLogic.Models.GameMaster>)ViewBag.GameData;
+    
+
+}
+<div class="wrapper">
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">place</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    @*<div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/GameMapping/CreateDeviceGameMapping"><i class="material-icons">add</i>Add Game Mapping</a>
+                                    </div>*@
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="col-lg-12">
+                                    <select class="form-control selectpicker" data-style="select-with-transition" id="ddlGame" name="ddlUser" onchange="GetUsers(this);">
+                                        <option value="0" selected="">Select Game</option>
+                                        @foreach (var game in GameData)
+                                        {
+                                            <option value="@game.GameID">@game.GameName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div id="dvUsers" style="padding:15px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    $('#tree').tree({
+    //        primaryKey: 'id',
+    //        uiLibrary: 'materialdesign',
+    //        dataSource: '/UserMapping/GetLocation',
+    //        checkboxes: true
+    //    });
+    //});
+
+    function GetUsers(obj) {
+        var gameid = $(obj).val();
+        var data = { Gameid: gameid }
+        $.get('GetUsers/', data, function (responseData) {
+            var output = '';
+            $.each(responseData, function (key, value) {
+                //output += '<input type="checkbox" id="chk" value="' + value.userID + '" checked="' + value.activeUser + '" onchange="UpdateUser(this);"/><span  style="padding-left:10px">' + value.userName + '</span><br>';
+                if (value.activeUser == true) {
+                    output += '<input type="checkbox" id="chk" value="' + value.userID + '" checked="checked" onchange="UpdateUser(this);"/><span  style="padding-left:10px">' + value.userName + '</span><br>';
+                }
+                else {
+                    output += '<input type="checkbox" id="chk" value="' + value.userID + '" onchange="UpdateUser(this);"/><span  style="padding-left:10px">' + value.userName + '</span><br>';
+                }
+                
+            });
+            $("#dvUsers").html(output);
+        });
+    }
+
+    function UpdateUser(obj) {
+        debugger;
+        //var user = $(obj).val();
+        //var isChecked = $(obj).is(':checked');
+
+        var data = new Object;
+
+        data.Gameid = $("#ddlGame").val();
+        data.UserId = $(obj).val();
+        data.isChecked = $(obj).is(':checked');
+
+        $.get('UpdateUser/', data, function (responseData) {
+            var output = '';
+            //$.each(responseData, function (key, value) {
+            //    output += '<input type="checkbox" id="chk" value="' + value.userID + '" checked="' + value.activeUser + '" onchange="UpdateUser(this);"/><span  style="padding-left:10px">' + value.userName + '</span><br>';
+            //});
+            //$("#dvUsers").html(output);
+        });
+    }
+</script>

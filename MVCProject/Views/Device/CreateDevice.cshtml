@@ -1,0 +1,231 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Devcie Location Create Page";
+    var DeviceData = (BusinessLogic.Models.DeviceModelVM)ViewBag.DeviceData;
+    var UserData = (List<BusinessLogic.Models.UserModel>)ViewBag.UserData;
+}
+<div class="wrapper ">
+
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <div class="card-icon">
+                                            <i class="material-icons">place</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    @*<div class="col-lg-2">
+                                        <button type="button" class="btn btn-bluedark float-right btn-sm" data-toggle="modal" data-target="#centralModalSm">Select User</button>
+
+                                    </div>*@
+                                    <div class="col-lg-4">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/Device/Index"><i class="material-icons">remove_red_eye</i>View Location</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @using (Html.BeginForm("CreateDevice", "Device", FormMethod.Post, new { @name = "Form1" }))
+                            {
+                                <div class="card-body">
+
+
+                                    @{ if (Convert.ToInt32(Context.Session.GetInt32("UserRoleID")) == 1)
+                                        {
+                                            <div class="form-group">
+                                                <label for="role" class="bmd-label-floating"> User * </label>
+                                                <select class="form-control selectpicker clsuserlist" data-style="select-with-transition" id="userlist" name="userlist" required="true">
+
+                                                    <option value="0" selected="selected">Select User</option>
+
+                                                    @foreach (var use in UserData)
+                                                    {
+                                                        <option value="@use.UserID" selected="@(ViewBag.UserId != null ? (ViewBag.UserId.ToString() == use.UserID.ToString() ? true : false):false)">@use.UserName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        }
+                                    }
+
+                                    <div class="form-group">
+                                        <label for="role" class="bmd-label-floating"> Device * </label>
+                                        <select class="form-control selectpicker" data-style="select-with-transition" id="devicelist" name="devicelist" required="true">
+
+                                            <option value="0" selected="selected">Select Device</option>
+
+                                            @foreach (var DeviceList in ViewBag.DeviceList)
+                                            {
+                                                <option value="@DeviceList.DeviceID" selected="@(DeviceData.DeviceID != null ? (DeviceData.DeviceID.ToString() == DeviceList.DeviceID.ToString() ? true: false):false)">@DeviceList.DeviceName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deviceName" class="bmd-label-floating">Location Name *</label>
+                                        <input type="text" class="form-control" id="deviceName" name="deviceName" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.LocationName) ? "" : DeviceData.LocationName):"")" required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dviceAddress" class="bmd-label-floating">Location Address *</label>
+                                        <input type="text" class="form-control" id="dviceAddress" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.LocationAddress)? "": DeviceData.LocationAddress):"")" required="true" name="dviceAddress">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deviceCity" class="bmd-label-floating">City</label>
+                                        <input type="text" class="form-control" id="deviceCity" name="deviceCity" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.City)? "": DeviceData.City):"")">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deviceState" class="bmd-label-floating">State</label>
+                                        <input type="text" class="form-control" id="deviceState" name="deviceState" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.State)? "": DeviceData.State):"")">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deviceCountry" class="bmd-label-floating">Country</label>
+                                        <input type="text" class="form-control" id="deviceCountry" name="deviceCountry" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.Country)? "": DeviceData.Country):"")">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deviceZipCode" class="bmd-label-floating">Zip Code</label>
+                                        <input type="text" class="form-control" id="deviceZipCode" name="deviceZipCode" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.ZipCode)? "": DeviceData.ZipCode):"")">
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <input type="hidden" name="deviceID" value="@(DeviceData != null ? ((DeviceData.LocationID == 0 ||DeviceData.LocationID == null) ? 0: DeviceData.LocationID):0)" />
+                                    <button type="submit" class="btn btn-bluedark">Save</button>
+                                </div>
+                            }
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+        @*<div class="dropdown bootstrap-select form-control show dropup">
+                <select class="form-control selectpicker" data-style="select-with-transition" id="userlist" name="userlist" required="true" onchange="GetDevices(this);" tabindex="-98">
+
+                    <option value="0" selected="selected">Select User</option>
+
+                    <option value="1">1</option>
+                    <option value="55">55</option>
+                    <option value="56">56</option>
+                </select>
+                <button type="button" class="btn dropdown-toggle select-with-transition" data-toggle="dropdown" role="button" data-id="userlist" title="55" aria-expanded="true">
+                    <div class="filter-option">
+                        <div class="filter-option-inner">
+                            <div class="filter-option-inner-inner">
+                                55
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ripple-container"></div>
+                </button>
+                <div class="dropdown-menu show" role="combobox" x-placement="top-start" style="max-height: 163px; overflow: hidden; min-height: 126px; position: absolute; top: -159px; left: 1px; will-change: top, left;">
+                    <div class="inner show" role="listbox" aria-expanded="true" tabindex="-1" style="max-height: 153px; overflow-y: auto; min-height: 116px;">
+                        <ul class="dropdown-menu inner show">
+                            <li class="">
+                                <a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false">
+                                    <span class=" bs-ok-default check-mark"></span>
+                                    <span class="text">Select User</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false">
+                                    <span class=" bs-ok-default check-mark"></span>
+                                    <span class="text">1</span>
+                                </a>
+                            </li>
+                            <li class="selected active">
+                                <a role="option" class="dropdown-item selected active" aria-disabled="false" tabindex="0" aria-selected="true">
+                                    <span class=" bs-ok-default check-mark"></span><span class="text">55</span><div class="ripple-container">
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false">
+                                    <span class=" bs-ok-default check-mark"></span><span class="text">56</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>*@
+    </div>
+</div>
+
+<div class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <!--Content-->
+        <div class="modal-content">
+            <!--Header-->
+            <div class="modal-header">
+                <h4 class="modal-title w-50" id="myModalLabel">Select User</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <!--Body-->
+            @{ if (Convert.ToInt32(Context.Session.GetInt32("userroleid")) == 1)
+                {
+                    <div class="form-group">
+                        @*<label for="role" class="bmd-label-floating"> user * </label>*@
+                        <select class="form-control selectpicker" data-style="select-with-transition" id="userlist" name="userlist" required="true" onchange="getdevices(this);">
+
+                            <option value="0" selected="selected">select user</option>
+
+                            @foreach (var use in UserData)
+                            {
+                                <option value="@use.UserID">@use.UserID</option>
+                            }
+                        </select>
+                    </div>
+                    <div id="dvusers" style="padding:15px"></div>
+                }
+            }
+            <!--Footer-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-sm">Save changes</button>
+            </div>
+        </div>
+        <!--/.Content-->
+    </div>
+</div>
+
+<script src="~/assets/js/core/jquery.min.js"></script>
+<script type="text/javascript">
+    function GetDevices() {
+        document.forms["Form1"].submit();
+        //location = $("#userlist option:selected").val();
+       
+    }
+    //$("body").on("change", "#devicelist", function () {
+    //    $("#userlist").val($(this).find("option:selected").text());
+    //    document.forms["Form1"].submit();
+    //});
+    $(document).on('change', ".clsuserlist", function () {
+        debugger
+        var userId = $('#userlist').val();
+        
+        $.ajax({
+            url: '/Device/GetDevices',
+            type: 'GET',
+            datatype: 'JSON',
+            data: { userId : userId },
+            success: function (result) {
+                debugger;
+                $('#devicelist').html('');
+                $('#devicelist').append($('<option></option>').val(0).html("Select Device"));
+                $.each(result, function (i, item)
+                {
+                $('#devicelist').append($('<option></option>').val(item.deviceID).html(item.deviceName));
+                $("#devicelist").selectpicker('refresh');
+                });
+            }
+        });
+    });
+</script>
+

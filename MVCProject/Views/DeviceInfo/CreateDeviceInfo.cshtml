@@ -1,0 +1,106 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Devcie Location Create Page";
+    var DeviceData = (BusinessLogic.Models.DeviceInfoModelVM)ViewBag.DeviceInfoData;
+    var LocationData = (List<BusinessLogic.Models.DeviceModel>)ViewBag.LocationData;
+    var UserData = (List<BusinessLogic.Models.UserModel>)ViewBag.UserData;
+}
+
+<div class="wrapper ">
+
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">devices</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/DeviceInfo/Index"><i class="material-icons">remove_red_eye</i>View Device</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @using (Html.BeginForm("CreateDeviceInfo", "DeviceInfo", FormMethod.Post))
+                            {
+                                <div class="card-body row">
+                                    @{ if (Convert.ToInt32(Context.Session.GetInt32("UserRoleID")) == 1)
+                                        {
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    <label for="role" class="bmd-label-floating"> User * </label>
+                                                    <select class="form-control selectpicker" data-style="select-with-transition" id="userlist" name="userlist" required="true">
+
+                                                        <option value="0" selected="selected">Select User</option>
+
+                                                        @foreach (var use in UserData)
+                                                        {
+                                                            <option value="@use.UserID" selected="@(ViewBag.UserId != null ? (ViewBag.UserId.ToString() == use.UserID.ToString() ? true : false):false)">@use.UserName</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="deviceName" class="bmd-label-floating">Device Name *</label>
+                                            <input type="text" class="form-control" id="deviceName" name="deviceName" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.DeviceName) ? "" : DeviceData.DeviceName):"")" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+
+                                            <div class="form-group">
+                                                <label for="MachineID" class="bmd-label-floating">Device Code *</label>
+                                                <input type="text" class="form-control" id="MachineID" name="MachineID" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.MachineID) ? "" : DeviceData.MachineID):"")" required="true">
+                                            </div>
+                                            @*<label for="ddlLocationId" class="bmd-label-floating"> Location Name * </label>*@
+                                            @*<select class="form-control selectpicker" data-style="select-with-transition" id="ddlLocationId" name="ddlLocationId" required="true">
+                                    <option value="0" selected="">Select Location</option>
+                                    @foreach (var location in LocationData)
+                                    {
+                                        <option value="@location.LocationID" selected="@(DeviceData != null ? (DeviceData.LocationID == @location.LocationID ? true : false) : false)">@location.LocationName</option>
+                                    }
+                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group">
+                                            <label for="dviceAddress" class="bmd-label-floating">Device Info *</label>
+                                            <input type="text" class="form-control" id="dviceAddress" value="@(DeviceData != null ? (String.IsNullOrEmpty(DeviceData.DeviceInfo)? "": DeviceData.DeviceInfo):"")" required="true" name="dviceAddress">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <input type="hidden" name="deviceID" value="@(DeviceData != null ? (DeviceData.DeviceID == 0 ? 0: DeviceData.DeviceID):0)" />
+                                    <button type="submit" id="btn-submit" class="btn btn-bluedark">Save</button>
+                                   
+                                </div>
+                            }
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+       
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script src="~/assets/js/core/jquery.min.js"></script>
+    <script>
+        
+    </script>

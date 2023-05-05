@@ -1,0 +1,5 @@
+.main-panel > .content {
+    margin-top: 0px;
+    padding: 0;
+    min-height: calc(100vh - 123px);
+}

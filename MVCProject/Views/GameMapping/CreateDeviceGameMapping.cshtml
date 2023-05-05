@@ -1,0 +1,169 @@
+﻿@using Microsoft.AspNetCore.Http;
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Devcie Location Create Page";
+    var DeviceData = (BusinessLogic.Models.DeviceGameMappingModel)ViewBag.DeviceInfoData;
+    var DeviceInfoData = (List<BusinessLogic.Models.DeviceInfoModel>)ViewBag.DeviceData;
+    var GameData = (List<BusinessLogic.Models.GameMaster>)ViewBag.GameData;
+    var MinuteData = (List<MVC_Demo.Enums.CommanEnum>)ViewBag.MinuteData;
+    var SecondData = (List<MVC_Demo.Enums.CommanEnum>)ViewBag.SecondData;
+    var UserData = (List<BusinessLogic.Models.UserModel>)ViewBag.UserData;
+}
+<div class="wrapper ">
+
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">devices</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/GameMapping/Index"><i class="material-icons">remove_red_eye</i>View Device</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @using (Html.BeginForm("CreateDeviceGameMapping", "GameMapping", FormMethod.Post))
+                            {
+                                <div class="card-body row">
+                                    @{ if (Convert.ToInt32(Context.Session.GetInt32("UserRoleID")) == 1)
+                                        {
+                                            <div class="col-lg-12">
+                                                <div class="form-group">
+                                                    @*<label for="ddlLocationId" class="bmd-label-floating"> Device Name * </label>*@
+                                                    <select class="form-control selectpicker clsuserlist" data-style="select-with-transition" id="userlist" name="userlist" required="true">
+                                                        <option value="0" selected="">Select User</option>
+                                                        @foreach (var use in UserData)
+                                                        {
+                                                            <option value="@(use.UserID)" selected="@(ViewBag.UserId != null ? (ViewBag.UserId.ToString() == use.UserID.ToString() ? true : false):false)">@use.UserName</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @*<label for="ddlLocationId" class="bmd-label-floating"> Device Name * </label>*@
+                                            <select class="form-control selectpicker" data-style="select-with-transition" id="ddlDeviceId" name="ddlDeviceId" required="true">
+                                                <option value="0" selected="">Select Device Name</option>
+                                                @foreach (var location in DeviceInfoData)
+                                                {
+                                                    <option value="@location.DeviceID" selected="@(DeviceData != null ? (DeviceData.DeviceID == location.DeviceID ? true : false) : false)">@location.DeviceName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @*<label for="ddlLocationId" class="bmd-label-floating"> Game Name * </label>*@
+                                            <select class="form-control selectpicker" data-style="select-with-transition" id="ddlGameId" name="ddlGameId" required="true">
+                                                <option value="0" selected="">Select Game Name</option>
+                                                @foreach (var location in GameData)
+                                                {
+                                                    <option value="@location.GameID" selected="@(DeviceData != null ? (DeviceData.GameID == location.GameID ? true : false) : false)">@location.GameName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            @*<label for="ddlLocationId" class="bmd-label-floating w-100"> Game Time * </label>*@
+                                            <select class="form-control selectpicker w-25" data-style="select-with-transition" id="ddlMinuteId" name="ddlMinuteId" required="true">
+                                                <option value="0" selected="">Select Minute</option>
+                                                @foreach (var min in MinuteData)
+                                                {
+                                                    <option value="@min.minuteVlaue" selected="@(DeviceData != null ? (DeviceData.minute == min.minuteVlaue ? true: false):false)">@min.minute</option>
+                                                }
+                                            </select>
+                                            <select class="form-control selectpicker w-25" data-style="select-with-transition" id="ddlSecondId" name="ddlSecondId" required="true">
+                                                <option value="0" selected="">Select Second</option>
+                                                @foreach (var sec in SecondData)
+                                                {
+                                                    <option value="@sec.minuteVlaue" selected="@(DeviceData != null ? (DeviceData.Seconds == sec.minuteVlaue ? true: false):false)">@sec.minute</option>
+                                                }
+                                            </select>
+                                            @*<select class="form-control selectpicker w-25" data-style="select-with-transition" id="ddlSecondId" name="ddlSecondId" required="true">
+                                                    <option value="0" selected="">Select User</option>
+                                                    @foreach (var use in UserData)
+                                                    {
+                                                        <option value="@use.UserID">@use.UserID</option>
+                                                    }
+                                                </select>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label for="dviceAddress" class="bmd-label-floating">Game Amount *</label>
+                                            <input type="text" class="form-control" id="gameAmount" value="@(DeviceData != null ? (DeviceData.GameAmount == 0 ? ' ': DeviceData.GameAmount):' ')" required="true" name="gameAmount">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <input type="hidden" name="deviceID" value="@(DeviceData != null ? (DeviceData.DeviceID == 0 ? 0: DeviceData.DeviceID):0)" />
+                                    <button type="submit" class="btn btn-bluedark">Save</button>
+                                </div>
+                            }
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/assets/js/core/jquery.min.js"></script>
+<script type="text/javascript">
+    $(".clsuserlist").off('change').on('change',function () {
+        var userId = $('#userlist').val();
+
+        $.ajax({
+            url: '/GameMapping/GetDevices',
+            type: 'GET',
+            datatype: 'json',
+            contentType: 'application/json',
+            data: { userId: userId },
+            success: function (result)
+            {
+                debugger;
+                var object = JSON.parse(result);
+                var deviceInfoModels = object.deviceInfoModels;
+                var gameMasters = object.gameMasters;
+
+                $('#ddlDeviceId').html('');
+                $('#ddlDeviceId').append($('<option></option>').val(0).html("Select Device"));
+                $.each(deviceInfoModels, function (i, item)
+                { 
+                    $('#ddlDeviceId').append($('<option></option>').val(item.DeviceID).html(item.DeviceName));
+                    $("#ddlDeviceId").selectpicker('refresh');
+
+                });
+               
+                $('#ddlGameId').html('');
+                $('#ddlGameId').append($('<option></option>').val(0).html("Select Game"));
+                $.each(gameMasters, function (i, item)
+                {
+                    $('#ddlGameId').append($('<option></option>').val(item.GameID).html(item.GameName));
+                    $("#ddlGameId").selectpicker('refresh');
+                });
+            }
+        });
+    });
+    //$('#ddlGameId').on("change", function ()
+    //{
+    //    var dataid = $("#ddlGameId option:selected").attr('value');
+    //    alert(dataid)
+    //});
+</script>

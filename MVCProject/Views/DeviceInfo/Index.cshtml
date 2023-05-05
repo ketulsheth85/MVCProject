@@ -1,0 +1,282 @@
+﻿@model List<BusinessLogic.Models.DeviceInfoModel>
+@{
+    Layout = "_Layout";
+    var modalPopup = ViewBag.isSaved;
+}
+
+<div class="wrapper ">
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">devices</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/DeviceInfo/CreateDeviceInfo"><i class="material-icons">add</i>Add Device</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="toolbar">
+                                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                                </div>
+                                <div class="material-datatables">
+                                    <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Device Name</th>
+                                                <th>Location Name</th>
+                                                <th>Device Info</th>
+                                                <th>Online Status</th>
+                                                <th>Active Device</th>
+
+                                                <th class="disabled-sorting text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                foreach (var DI in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@DI.DeviceName</td>
+                                                        <td>@DI.LocationName</td>
+                                                        <td>@DI.DeviceInfo</td>
+                                                        <td>@DI.OnlineStatus</td>
+                                                        <td>
+                                                            
+                                                            <div class="togglebutton togglebutton-bluedark clsrefresh">
+
+                                                                <label>
+                                                                    <input type="checkbox" class="chkInActive" value="@DI.DeviceID" checked="@(DI.ActiveDeviceInfo==true? false:true)">
+                                                                    <span class="toggle"></span>
+                                                                </label>
+                                                            </div>
+                                                        </td>
+
+                                                        <td class="text-right flex-row">
+                                                            <a href="/DeviceInfo/CreateDeviceInfo/@DI.DeviceID" class="btn btn-link btn-info btn-just-icon"><i class="material-icons">edit</i></a>
+                                                            @*<a href="Game/Delete/@gm.GameID" class="btn btn-link btn-danger btn-just-icon"><i class="material-icons">close</i></a>*@
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <input type="hidden" id="lblPopup" value="@modalPopup" />
+
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+    </div>
+
+</div>
+
+<script src="~/assets/js/core/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        debugger
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+           
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            "responsive": true,
+
+            "language": {
+                search: "INPUT",
+                searchPlaceholder: "Search records"
+            }
+        });
+
+        setInterval(function () {
+            $('#datatables tbody tr').remove();
+            $(".bmd-form-group").removeClass("bmd-form-group-sm");
+            refreshPage();
+            $(".bmd-form-group").addClass("bmd-form-group-sm");
+            
+        }, 8000);
+        
+        //debugger
+        //$.fn.dataTable.ext.search.push(
+        //    function (settings, data, dataIndex) {
+        //        var refresh = ($('.form-control form-control-sm').val());
+        //        if (settings.nTable.id !== 'datatables') {
+        //            if (refresh != "") {
+        //                return true;
+        //            }
+        //        }
+        //        $('#refresh').keyup(function () {
+        //            $('#datatables').draw();
+        //        });
+        //    }
+        //);
+        //debugger
+        //$('#datatables_filter').keyup(function () {
+        //    $('#datatables').search($(this).val()).draw();
+        //});
+        debugger
+        var table = $('#datatables').DataTable();
+        $(".pagination").addClass("pagination-bluedark");
+
+        table.on('click', '.chkInActive', function () {
+            debugger
+            var id = $(this).val();
+            var ischecked = ($(this).prop('checked') == true ? 1 : 0);
+            var param = [];
+            param.push({ name: 'id', value: id });
+            param.push({ name: 'ischecked', value: ischecked });
+            doAjaxSubmit("/DeviceInfo/Delete", param, function (json, action, success) {
+                if (success) { }
+            });
+        });
+
+
+        if ($("#lblPopup").val() == "Saved") {
+            Swal.fire('Successfully', 'Device Has Been Saved Successfully!', 'success')
+        }
+        else if ($("#lblPopup").val() == "Updated") {
+            Swal.fire('Successfully', 'Device Updated Successfully!', 'success')
+        }
+        else if ($("#lblPopup").val() == "NotSaved") {
+            Swal.fire('Error', 'Device Code Does Not Exist!', 'error')
+        }
+        else if ($("#lblPopup").val() == "AlreadyExist") {
+            Swal.fire('Error', 'Device Code Already Exist!', 'error')
+        }
+        else if ($("#lblPopup").val() == "NotAssign") {
+            Swal.fire('Error', 'This Machine Is Already Asign To Another User !', 'error')
+        }
+        debugger
+        $("#datatables_filter").css({ "float": "right" });
+        $("#datatables_paginate").css({ "float": "right" });
+    });
+    function refreshPage() {
+        var stringData = $('#datatables').val();
+       
+        $.ajax({
+            url: '/DeviceInfo/GetRefreshData',
+            type: 'GET',
+            contentType: 'application/json',
+            dataType: 'json',
+            
+            search: true,
+            data: {
+                stringData: stringData
+            },
+            success: function (data) {
+                console.log(data);
+                
+                $.each(data, function (i, item) {
+                   
+                    var body = '<tr>'
+                    body += '<td> ' + item.deviceName + '</td>'
+                    body += '<td>' + item.locationName + '</td>'
+                    body += '<td>' + item.deviceInfo + '</td>'
+                    body += '<td>' + item.onlineStatus + '</td>'
+                    body += '<td>'
+                    if (item.activeDeviceInfo == true) {
+                        body += '<div class="togglebutton togglebutton-bluedark clsrefresh"><label><input type="checkbox" class="chkInActive" value="' + item.deviceID + '" ><span class="toggle"></span ></label></div>'
+                    }
+                    else {
+                        body += '<div class="togglebutton togglebutton-bluedark clsrefresh"><label><input type="checkbox" class="chkInActive" value="' + item.deviceID + '"  Checked><span class="toggle"></span ></label></div>'
+                    }
+                    body += '</td>'
+                    body += '<td class="text-right flex-row">'
+                    body += '<a href="/DeviceInfo/CreateDeviceInfo/' + item.deviceID + '" class="btn btn-link btn-info btn-just-icon"><i class="material-icons">edit</i>'
+                    body += '</td>'
+                    body += '</tr>';
+                    $('#datatables').append(body);
+                    //console.log(body);
+                });
+                //$('#datatables').dataTable();
+                var table = $('#datatables').DataTable();
+                table.draw();
+            },
+            afterSend: function () {
+                $('#datatables').dataTable().reload();
+            }
+        });
+
+    }
+  
+
+
+    //var modal = document.getElementById("myModal");
+
+    //// Get the button that opens the modal
+    //var btn = document.getElementById("submit");
+
+    //// Get the <span> element that closes the modal
+    //var span = document.getElementsByClassName("close")[0];
+
+    //// When the user clicks the button, open the modal
+    //btn.onclick = function () {
+    //    modal.style.display = "block";
+    //}
+
+    //// When the user clicks on <span> (x), close the modal
+    //span.onclick = function () {
+    //    modal.style.display = "none";
+    //}
+
+    //// When the user clicks anywhere outside of the modal, close it
+    //window.onclick = function (event) {
+    //    if (event.target == modal) {
+    //        modal.style.display = "none";
+    //    }
+    //}
+    //setInterval(function () { alert("Hello"); }, 3000);
+    //doAjaxSubmit("/DeviceInfo/Index", function (json, action, success) {
+    //    if (success) { }
+
+</script>
+@*<script type="text/javascript">
+        $(function () {
+
+
+        });
+
+        function getAllMessages() {
+            var tbl = $('#datatables');
+            $.ajax({
+                url: '/DeviceInfo/GetRefreshDatas',
+                contentType: 'application/html ; charset:utf-8',
+                type: 'GET',
+                dataType: 'html'
+            }).success(function (result) {
+
+
+                tbl.empty().append(result);
+
+            }).error(function () {
+                ;
+            });
+        }
+</script>*@

@@ -1,0 +1,76 @@
+﻿
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "User Create page";
+    var UserData = (BusinessLogic.Models.UserParameter)ViewBag.UserData;
+}
+
+<div class="wrapper ">
+
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header card-header-blue card-header-icon">
+                                <div class="row">
+                                    <div class="col-lg-10">
+                                        <div class="card-icon">
+                                            <i class="material-icons">person_add</i>
+                                        </div>
+                                        <h4 class="card-title">@ViewData["Title"]</h4>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <a class="btn btn-bluedark float-right btn-sm" href="/user/Index"><i class="material-icons">remove_red_eye</i>View User</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @using (Html.BeginForm("UserCreate", "User", FormMethod.Post))
+                            {
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleEmail" class="bmd-label-floating"> User Name *</label>
+                                        <input type="text" class="form-control" id="userName" name="userName" value="@(UserData != null ? (String.IsNullOrEmpty(UserData.UserName)? "": UserData.UserName):"")" required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="firstName" class="bmd-label-floating"> First Name *</label>
+                                        <input type="text" class="form-control" id="firstName" value="@(UserData != null ? (String.IsNullOrEmpty(UserData.FirstName)? "": UserData.FirstName):"")" name="firstName" required="true">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName" class="bmd-label-floating"> Last Name *</label>
+                                        <input type="text" class="form-control" id="lastName" value="@(UserData != null ? (String.IsNullOrEmpty(UserData.LastName)? "": UserData.LastName):"")" required="true" name="lastName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address" class="bmd-label-floating"> Address </label>
+                                        <input type="text" class="form-control" id="address" value="@(UserData != null ? (String.IsNullOrEmpty(UserData.Address)? "": UserData.Address):"")" name="address">
+                                    </div>
+                                    <div class="form-group" style="display:@(ViewBag.LoggedInUserRole != null ? (ViewBag.LoggedInUserRole == 1 ? "inline": "none"):"none")">
+                                        <label for="role" class="bmd-label-floating"> Role * </label>
+                                        <select class="form-control selectpicker" data-style="select-with-transition" id="role" name="role" required="true">
+                                            <option value="0" selected="@(UserData != null ? (UserData.UserRole == 0 ? true: false):false)">Select</option>
+                                            <option value="1" selected="@(UserData != null ? (UserData.UserRole == 1 ? true: false):false)">Admin</option>
+                                            <option value="2" selected="@(UserData != null ? (UserData.UserRole == 2 ? true: false):false)">Manager</option>
+                                            <option value="3" selected="@(UserData != null ? (UserData.UserRole == 3 ? true: false):false)">User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-right">
+                                    <input type="hidden" name="userID" value="@(UserData != null ? (UserData.UserID == 0 ? 0: UserData.UserID):0)" />
+                                    <button type="submit" class="btn btn-bluedark">Save</button>
+                                </div>
+                            }
+                            <!-- end content-->
+                        </div>
+                        <!--  end card  -->
+                    </div>
+                    <!-- end col-md-12 -->
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="~/assets/js/core/jquery.min.js"></script>
+
